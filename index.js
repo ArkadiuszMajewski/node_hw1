@@ -1,6 +1,6 @@
 const { Command } = require("commander");
 const contacts = require("./contacts");
-console.log(contacts);
+// console.log(contacts);
 
 const program = new Command();
 program
