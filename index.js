@@ -1,41 +1,41 @@
-// const { error } = require("console");
+const { Command } = require("commander");
+const contacts = require("./contacts");
+console.log(contacts);
 
-// const fs = require("fs").promises;
+const program = new Command();
+program
+  .option("-a, --action <type>", "choose action")
+  .option("-i, --id <type>", "user id")
+  .option("-n, --name <type>", "user name")
+  .option("-e, --email <type>", "user email")
+  .option("-p, --phone <type>", "user phone");
 
-// fs.readFile("contact.js", (error, content) => {
-//   if (error) {
-//     console.error(error);
-//     return;
-//   }
+program.parse(process.argv);
 
-//   console.log(content.toString());
-// });
+const argv = program.opts();
 
-// (async () => {
-//   const buffer = await fs.readFile("text.txt");
+// TODO: refactor
+async function invokeAction({ action, id, name, email, phone }) {
+  switch (action) {
+    case "list":
+      await contacts.listContacts();
+      break;
 
-//   await fs.appendFile("text.txt", " nowy text");
-//   console.log(buffer.toString());
-//   //   await fs.writeFile("text.txt", "test");
-//   const ost = await fs.readFile("text.txt");
-//   console.log(ost.toString());
-// })();
+    case "get":
+      await contacts.getContactById(id);
+      break;
 
-// import readline from "node:readline";
-// const rl = readline.createInterface({
-//   input: process.stdin,
-//   output: process.stndout,
-// });
-//  console.log("ASdasdasd")
+    case "add":
+      await contacts.addContact(name, email, phone);
+      break;
 
-// const fs = require("fs");
-// const path = require("path");
-// fs.readFile(path.resolve(__dirname, "contacts.json"), (error, data) => {
-//   if (error) {
-//     console.error();
-//   }
+    case "remove":
+      await contacts.removeContact(id);
+      break;
 
-//   const sringData = data.toString();
-//   const contacts = JSON.parse(sringData);
-//   console.log(contacts);
-// });
+    default:
+      console.warn("\x1B[31m Unknown action type!");
+  }
+}
+
+invokeAction(argv);
